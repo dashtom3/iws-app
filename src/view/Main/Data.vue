@@ -107,9 +107,9 @@ export default{
         // self.groupData = data.data;
         // self.getDeviceData();
         Indicator.close();
-        // self.time = setTimeout(()=>{
-        //   self.getGroupDetail()
-        // },15000)
+        self.time = setTimeout(()=>{
+          self.getRealData()
+        },15000)
       }).catch((err) => {
         Indicator.close();
         console.log(1)
