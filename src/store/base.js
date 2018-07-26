@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const HOST = 'http://61.190.61.78:6784/iws/api/';
+const HOST = 'http://localhost:6784/';
 
 export default function (url, params = {}) {
   return new Promise((resolve, reject) => {
@@ -19,14 +19,15 @@ export function get(url, params = {}) {
   });
 }
 export function getWithToken(url, params) {
-  params.token = JSON.parse(localStorage.getItem('swuser')).token;
+  url = url +"?token="+ JSON.parse(localStorage.getItem('swuser')).token;
   return new Promise((resolve, reject) => {
     axios.get(HOST + url, { params })
       .then((res) => {
-        if (res.data.callStatus === 'SUCCEED') {
+        console.log(res.data)
+        if (res.data.status === 1) {
           resolve(res.data);
         } else {
-          reject(res.data.errorLabel);
+          reject(res.data.message);
         }
       }).catch(() => {
         reject('网络请求错误');
@@ -47,10 +48,10 @@ export function postWithToken(url, params) {
     temp.append('token', JSON.parse(localStorage.getItem('swuser')).token);
     axios.post(HOST + url, temp)
       .then((res) => {
-        if (res.data.callStatus === 'SUCCEED') {
+        if (res.data.status === 1) {
           resolve(res.data);
         } else {
-          reject(res.data.errorLabel);
+          reject(res.data.message);
         }
       }).catch(() => {
         // reject(err);
@@ -68,10 +69,11 @@ export function post(url, params) {
     });
     axios.post(HOST + url, temp)
       .then((res) => {
-        if (res.data.callStatus === 'SUCCEED') {
+        // console.log(res)
+        if (res.data.status === 1) {
           resolve(res.data);
         } else {
-          reject(res.data.errorLabel);
+          reject(res.data.message);
         }
       }).catch(() => {
         // reject(err);

@@ -17,14 +17,14 @@ export function userVeriCode(params) {
 export function userChangePass(params) {
   return postWithToken('user/changePwd', params);
 }
-export function deviceDetail(params) {
-  return getWithToken('room/groupDetail', params);
+export function getRealData(params) {
+  return getWithToken('data/realData/'+params._id, null);
 }
 export function changePump(params) {
   return postWithToken('room/manual', params);
 }
 export function systemList() {
-  return postWithToken('system/listPack', null);
+  return getWithToken('system/system/all', null);
 }
 export function deviceDataList(params) {
   return getWithToken('data/presentData', params);

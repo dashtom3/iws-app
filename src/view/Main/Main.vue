@@ -5,15 +5,9 @@
           <!-- <el-amap :vid="'amap-vue'" :zoom="7"> -->
           <el-amap :vid="'amap-vue'" :zoom="7" :map-manager="mainMap" :center="center">
             <div v-for="system,index1 in sysList" v-if="addressSelect.sys == index1 || addressSelect.sys == -1">
-              <div v-for="pro,index2 in system.locationPack" v-if="addressSelect.pro == index2 || addressSelect.pro == -1">
-                <div v-for="city,index3 in pro.city" v-if="addressSelect.city == index3 || addressSelect.city == -1">
-                  <div v-for="area,index4 in city.area" v-if="addressSelect.area == index4 || addressSelect.area == -1">
-                    <el-amap-marker v-for="item in area.location" :position="[item.positionX,item.positionY]"
-                    :content="item.content" :visible="true" :events="item.events" >
-                    </el-amap-marker>
-                  </div>
-                </div>
-              </div>
+                <el-amap-marker v-for="item in system.location" :position="[item.lat,item.lng]"
+                  :content="item.content" :visible="true" :events="item.events" >
+                </el-amap-marker>
             </div>
           </el-amap>
         </div>
@@ -22,62 +16,24 @@
             <mu-menu-item :value="-1" title="全部" />
             <mu-menu-item v-for="sys,index in sysList" :key="index" :value="index" :title="sys.name" />
           </mu-select-field>
-          <div v-if="addressSelect.sys != -1 && sysList[addressSelect.sys].locationPack != null">
-            <mu-select-field v-model="addressSelect.pro"  label="选择省份" fullWidth v-if="addressSelect.sys != -1">
-              <mu-menu-item :value="-1" title="全部" />
-              <mu-menu-item v-for="pro,index in sysList[addressSelect.sys].locationPack" :key="index" :value="index" :title="pro.name" />
-            </mu-select-field>
-            <mu-select-field v-model="addressSelect.pro"  label="选择省份" fullWidth v-if="addressSelect.sys == -1">
-              <mu-menu-item :value="-1" title="全部" />
-            </mu-select-field>
-            <br/>
-            <mu-select-field v-model="addressSelect.city" label="选择城市" fullWidth v-if="addressSelect.pro != -1">
-              <mu-menu-item :value="-1" title="全部" />
-              <mu-menu-item v-for="city,index in sysList[addressSelect.sys].locationPack[addressSelect.pro].city" :key="index+1" :value="index" :title="city.name"/>
-            </mu-select-field>
-            <mu-select-field v-model="addressSelect.city" label="选择城市" fullWidth v-if="addressSelect.pro == -1">
-              <mu-menu-item :value="-1" title="全部" />
-            </mu-select-field>
-            <br/>
-            <mu-select-field v-model="addressSelect.area"  label="选择区域" fullWidth v-if="addressSelect.city != -1">
-              <mu-menu-item :value="-1" title="全部" />
-              <mu-menu-item v-for="area,index in sysList[addressSelect.sys].locationPack[addressSelect.pro].city[addressSelect.city].area" :key="index" :value="index" :title="area.name"/>
-            </mu-select-field>
-            <mu-select-field v-model="addressSelect.area"  label="选择区域" fullWidth v-if="addressSelect.city == -1">
-              <mu-menu-item :value="-1" title="全部" />
-            </mu-select-field>
-          </div>
-          <div v-if="addressSelect.sys == -1">
-            <mu-select-field v-model="addressSelect.pro"  label="选择省份" fullWidth v-if="addressSelect.sys == -1">
-              <mu-menu-item :value="-1" title="全部" />
-            </mu-select-field>
-            <br/>
-            <mu-select-field v-model="addressSelect.city" label="选择城市" fullWidth v-if="addressSelect.pro == -1">
-              <mu-menu-item :value="-1" title="全部" />
-            </mu-select-field>
-            <br/>
-            <mu-select-field v-model="addressSelect.area"  label="选择区域" fullWidth v-if="addressSelect.city == -1">
-              <mu-menu-item :value="-1" title="全部" />
-            </mu-select-field>
-          </div>
         </mu-bottom-sheet>
         <mu-bottom-sheet :open="roomBottom" @close="changeRoomBottom" v-if="$store.state.base.locationDetail != null" sheetClass="bottom-sheet">
             <div class="shet-title">
-              名称:{{$store.state.base.locationDetail.name}}&nbsp;&nbsp;地点:{{$store.state.base.locationDetail.describes}}
+              名称:{{$store.state.base.locationDetail.name}}&nbsp;&nbsp;地点:{{$store.state.base.locationDetail.address}}
             </div>
             <mu-divider />
             <div class="gridlist" v-for="item,index in $store.state.base.locationDetail.room">
               <div class="gridname">房间名称: {{item.name}}
               </div>
               <div class="shet-middle">
-              <div v-for="item1, index1 in item.deviceGroups" :key="index" class="gridcard" @click="goDataPage(index,item1)">
+              <div v-for="item1, index1 in item.device" :key="index" class="gridcard" @click="goDataPage(index,item1)">
 
                 <!-- <span><b>{{item1.roomName}}</b></span> -->
-                <img src="http://61.190.61.78:6784/iws/api/img/deviceGroupType01.png" />
+                <img src="../../assets/image/device.png" />
                 <mu-divider />
                 <span>{{item1.name}}</span>
               </div>
-              <div v-if="item.deviceGroups == null || item.deviceGroups.length == 0" style="text-align:center;padding-top:10px">
+              <div v-if="item.device == null || item.device.length == 0" style="text-align:center;padding-top:10px">
                 该房间暂无泵设备
               </div>
               </div>
@@ -122,6 +78,7 @@ export default{
   // <!-- <img src="./assets/logo.png"> -->
   data() {
     return {
+      sysImg:[],
       mainMap: null,
       sysList: null,
       // locationDetail: null,
@@ -132,9 +89,10 @@ export default{
         city: -1,
         area: -1,
       },
-      markerSelect: -1,
+      locationDetail:null,
+      markerSelect: "-1",
       center: [117.264595, 31.878641],
-      content: '<div style="margin-left:-45px;margin-top:-10px"><div style="text-align:center"><img style="width:35px" src="http://ou1o1z80r.bkt.clouddn.com/main_map_sys.png"><img style="width:20px;position:absolute;left:-10%;top:8%" src="http://61.190.61.78:6784/iws/api/img/system02.png"/></div><div style="width:100px;background-color:white;border:1px #9A2C2C solid;border-radius:4px;padding:2px 5px 2px 5px;text-align:center"><span style="font-size:16px;color:black">测试点</span></div></div>',
+      content: '<div style="margin-left:-45px;margin-top:-10px"><div style="text-align:center"><img style="width:35px" src="http://ou1o1z80r.bkt.clouddn.com/main_map_sys.png"><img style="width:20px;position:absolute;left:-10%;top:8%" src="http://218.23.124.104:6784/iws/api/img/system02.png"/></div><div style="width:100px;background-color:white;border:1px #9A2C2C solid;border-radius:4px;padding:2px 5px 2px 5px;text-align:center"><span style="font-size:16px;color:black">测试点</span></div></div>',
     };
   },
   watch: {
@@ -157,11 +115,20 @@ export default{
     },
   },
   created() {
+    this.setSysImg();
     this.getSystemList();
   },
   methods: {
     back() {
       this.$router.go(-1);
+    },
+    //系统
+    setSysImg(){
+      this.sysImg = []
+      for(var i=1;i<9;i++){
+        var temp = require('../../assets/system/sys_'+i+'.png')
+        this.sysImg.push(temp)
+      }
     },
     changeRoomBottom() {
       this.roomBottom = !this.roomBottom;
@@ -174,7 +141,7 @@ export default{
       const self = this;
       this.$store.dispatch(type.SYSTEM_LIST).then((data) => {
         console.log(data.data);
-        self.sysList = self.analyseList(data.data);
+        self.sysList = self.analyseList(data.data.data);
         Indicator.close();
       }).catch((err) => {
         Indicator.close();
@@ -186,7 +153,7 @@ export default{
       });
     },
     goDataPage(roomSelect, deviceSelect) {
-      if (this.$store.state.base.locationDetail.room[roomSelect].deviceGroups.length > 0) {
+      if (this.$store.state.base.locationDetail.room[roomSelect].device.length > 0) {
         this.$store.commit(type.ROOM_SELECT, { roomSelect, deviceSelect });
         console.log(this.$store.state.base.roomSelect);
         this.$router.push({ name: 'Data' });
@@ -196,33 +163,23 @@ export default{
       }
     },
     analyseList(arr) {
-      console.log(arr);
+      // console.log(arr);
       arr.forEach((system) => {
-        if (system.locationPack != null) {
-          system.locationPack.forEach((pro) => {
-            pro.city.forEach((city) => {
-              city.area.forEach((area) => {
-                area.location.forEach((item) => {
-                  item.content = this.setHtmlContent(item.pic, item.name.substring(0, 7));
-                  item.events = {
-                    click: () => {
-                      this.markerSelect = item.id;
-                      Indicator.open();
-                      const self = this;
-                      this.$store.dispatch(type.LD, { locationId: item.id }).then(() => {
-                        this.roomBottom = !this.roomBottom;
-                        Indicator.close();
-                      }).catch((err) => {
-                        self.catchError(err);
-                      });
-                    },
-                  };
-                });
-              });
-            });
+          system.location.forEach((item) => {
+            console.log(item)
+              item.content = this.setHtmlContent(this.sysImg[system.pic], item.name.substring(0, 7));
+              item.events = {
+                click: () => {
+                  this.markerSelect = item._id;
+                  // Indicator.open();
+                  const self = this;
+                  this.roomBottom = !this.roomBottom;
+                  this.$store.commit(type.LD, item)
+                },
+              };
           });
-        }
       });
+      console.log(arr)
       return arr;
     },
     catchError(err) {

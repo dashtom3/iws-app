@@ -30,7 +30,7 @@
             <mu-text-field hintText="协调工作" multiLine :rows="2" :rowsMax="6" v-model="sign.teamwork" fullWidth /><br/>
             <mu-text-field hintText="详细描述" multiLine :rows="2" :rowsMax="6" v-model="sign.detailMsg" fullWidth /><br/>
             <el-upload
-            action="http://61.190.61.78:6784/iws/api/file/upload"
+            action="http://218.23.124.104:6784/iws/api/file/upload"
             :on-remove="handleRemove"
             :on-success="uploadSucceed"
             :file-list="fileList"

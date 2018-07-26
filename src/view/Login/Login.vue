@@ -6,7 +6,7 @@
         <img src="../../assets/image/login_logo.png"> <br/>
         <div v-if="loginState < 2">
         <div class="login-title">
-            <mu-text-field label="请输入手机号" type="number" v-model="userLogin.username" labelFloat fullWidth class="login-text"/><br/>
+            <mu-text-field label="请输入用户名" type="text" v-model="userLogin.username" labelFloat fullWidth class="login-text"/><br/>
             <div v-if="loginState == 0">
             <mu-text-field label="请输入密码" type="password" v-model="userLogin.password" labelFloat fullWidth class="login-text"/><br/>
             <mu-flat-button label="忘记密码" class="sec-button login-veri-btn" @click="alertMessage()"/>
@@ -25,8 +25,8 @@
         </div>
         <div v-if="loginState == 2">
         <div class="login-title2">
-            <mu-text-field label="请输入手机号" v-model="userRegister.username" labelFloat fullWidth class="login-text"/><br/>
-            <mu-text-field label="请输入验证码" v-model="userRegister.code" labelFloat fullWidth class="login-text"/><mu-flat-button label="获取验证码" primary @click="getVerifyCode" class="login-veri1"/><br/>
+            <mu-text-field label="请输入用户名" v-model="userRegister.username" labelFloat fullWidth class="login-text"/><br/>
+            <!-- <mu-text-field label="请输入验证码" v-model="userRegister.code" labelFloat fullWidth class="login-text"/><mu-flat-button label="获取验证码" primary @click="getVerifyCode" class="login-veri1"/><br/> -->
             <mu-text-field label="请输入密码"  v-model="userRegister.password" type="password" labelFloat fullWidth class="login-text"/><br/>
             <mu-text-field label="请再次确认密码" type="password" v-model="repassword" labelFloat fullWidth class="login-text"/><br/>
         </div>
@@ -37,8 +37,10 @@
         </div>
         <div v-if="loginState == 3">
         <div class="login-title2">
-            <mu-text-field label="请输入姓名" v-model="userRegister.name" labelFloat fullWidth class="login-text"/><br/>
-            <mu-text-field label="联系地址" v-model="userRegister.describes" labelFloat fullWidth multiLine :rows="3" :rowsMax="3" class="login-text"/><br/>
+            <mu-text-field label="请输入姓名" v-model="userRegister.realName" labelFloat fullWidth class="login-text"/><br/>
+            <mu-text-field label="请输入手机号" v-model="userRegister.phone" labelFloat fullWidth class="login-text"/><br/>
+            <mu-text-field label="联系地址" v-model="userRegister.address" labelFloat fullWidth multiLine :rows="3" :rowsMax="3" class="login-text"/><br/>
+
             <!-- <mu-text-field label="简介" labelFloat fullWidth multiLine :rows="2" :rowsMax="2" class="login-text"/><br/> -->
         </div>
         <div class="login-btn">

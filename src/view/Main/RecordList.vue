@@ -6,7 +6,7 @@
 
         <mu-card class="main-card" v-for="item,index in signList" >
           <div style="padding:8px">
-            <span><b>{{item.system.systemName}} ：{{item.location.locationName}}</b></span>
+            <span><b>{{item.system ? item.system.systemName : "未知" }} ：{{item.location? item.location.locationName:"未知"}}</b></span>
             <mu-flat-button label="详情" class="detail-btn" primary @click="showDetail(index)"/>
           </div>
           <div style="padding-bottom:8px;padding-left:8px">

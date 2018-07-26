@@ -137,15 +137,7 @@ const actions = {
     });
   },
   [type.LD](context, params) {
-    return new Promise((resolve, reject) => {
-      api.locationDetail(params)
-      .then((data) => {
-        context.commit(type.LD, data.data);
-        resolve();
-      }).catch((err) => {
-        reject(err);
-      });
-    });
+    context.commit(type.LD, params);
   },
   [type.USER_MEMBER]() {
     return new Promise((resolve, reject) => {
@@ -157,9 +149,9 @@ const actions = {
       });
     });
   },
-  [type.DEVICE_DETAIL](context, params) {
+  [type.REAL_DATA](context, params) {
     return new Promise((resolve, reject) => {
-      api.deviceDetail(params)
+      api.getRealData(params)
       .then((data) => {
         resolve(data);
       }).catch((err) => {
