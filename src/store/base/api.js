@@ -9,13 +9,16 @@ export function userRegister(params) {
   return post('user/register', params);
 }
 export function userUpdate(params) {
-  return postWithToken('user/update', params);
+  return postWithToken('user/update/'+params._id, params);
+}
+export function userList(params) {
+  return getWithToken('user/all', params);
 }
 export function userVeriCode(params) {
   return post('user/getVerifyCode', params);
 }
 export function userChangePass(params) {
-  return postWithToken('user/changePwd', params);
+  return postWithToken('user/changePassword', params);
 }
 export function getRealData(params) {
   return getWithToken('data/realData/'+params._id, null);
@@ -42,13 +45,16 @@ export function locationDetail(params) {
   return postWithToken('location/detail', params);
 }
 export function alarmList(params) {
-  return getWithToken('alarm/list', params);
+  return getWithToken('data/historyAlarmData', params);
+}
+export function realAlarmList(params) {
+  return getWithToken('data/realAlarmData', {isMe:'1'});
 }
 export function signIn(params) {
-  return postWithToken('signIn/signIn', params);
+  return postWithToken('work/sign/add', params);
 }
 export function signInList(params) {
-  return getWithToken('signIn/querySignIn', params);
+  return getWithToken('work/sign/all', params);
 }
 export function maintainList(params) {
   return getWithToken('maintenance/list', params);

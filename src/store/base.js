@@ -45,7 +45,7 @@ export function postWithToken(url, params) {
         }
       });
     }
-    temp.append('token', JSON.parse(localStorage.getItem('swuser')).token);
+    url = url + '?token=' + JSON.parse(localStorage.getItem('swuser')).token
     axios.post(HOST + url, temp)
       .then((res) => {
         if (res.data.status === 1) {

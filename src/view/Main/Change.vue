@@ -5,12 +5,18 @@
             <mu-flat-button label="完成" slot="right" @click="change"/>
         </mu-appbar>
         <div class="change-input" v-if="$route.params.id == 0">
-          <mu-text-field type="password" v-model="password.oldPwd" hintText="旧密码" fullWidth/><br/>
-          <mu-text-field type="password" v-model="password.newPwd" hintText="新密码" fullWidth/><br/>
+          <mu-text-field type="password" v-model="password.oldpassword" hintText="旧密码" fullWidth/><br/>
+          <mu-text-field type="password" v-model="password.password" hintText="新密码" fullWidth/><br/>
           <mu-text-field type="password" v-model="repassword" hintText="重复密码" fullWidth/><br/>
         </div>
         <div class="change-input" v-if="$route.params.id == 1">
-          <mu-text-field v-model="address" hintText="修改地址" fullWidth/><br/>
+          <mu-text-field v-model="user.realName" hintText="修改真实姓名" fullWidth/><br/>
+        </div>
+        <div class="change-input" v-if="$route.params.id == 2">
+          <mu-text-field v-model="user.phone" hintText="修改手机号" fullWidth/><br/>
+        </div>
+        <div class="change-input" v-if="$route.params.id == 3">
+          <mu-text-field v-model="user.address" hintText="修改地址" fullWidth/><br/>
         </div>
     </div>
 </template>
@@ -31,10 +37,11 @@ export default{
       memberList: null,
       title: '',
       password: {
-        oldPwd: null,
-        newPwd: null,
+        username:this.$store.state.base.user.username,
+        oldpassword: null,
+        password: null,
       },
-      address: null,
+      user: this.$store.state.base.user,
       repassword: null,
     };
   },
@@ -47,7 +54,7 @@ export default{
     },
     change() {
       if (this.$route.params.id === '0') {
-        if (this.password.newPwd !== this.repassword && this.password.newPwd !== null && this.password.newPwd !== '') {
+        if (this.password.password !== this.repassword && this.password.password !== null && this.password.password !== '') {
           MessageBox('消息', '新密码与重复密码不一致');
         } else {
           Indicator.open();
@@ -65,10 +72,10 @@ export default{
             }
           });
         }
-      } else if (this.$route.params.id === '1') {
+      } else {
         Indicator.open();
         const self = this;
-        this.$store.dispatch(type.USER_UPDATE, { address: this.address }).then(() => {
+        this.$store.dispatch(type.USER_UPDATE, this.user).then(() => {
           Indicator.close();
           this.$router.go(-1);
         }).catch((err) => {

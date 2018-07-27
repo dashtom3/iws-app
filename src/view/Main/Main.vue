@@ -58,7 +58,7 @@
            </mu-list-item>
           </mu-list> -->
         </mu-bottom-sheet>
-        <mu-raised-button label="签到" class="record-button" @click="recordWork" primary/>
+        <!-- <mu-raised-button label="签到" class="record-button" @click="recordWork" primary/> -->
         <Tabbar></Tabbar>
     </div>
 </template>

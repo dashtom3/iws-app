@@ -3,6 +3,7 @@
   <mu-appbar :title="$store.state.base.tabInfo[$store.state.base.tabbar].title">
       <mu-icon-button icon='label' slot="left"/>
       <mu-flat-button label="区域查找" slot="right" v-if="$store.state.base.tabbar == 0" @click="changeBottomSheet"/>
+      <!-- <mu-flat-button label="签到" slot="right" v-if="$store.state.base.tabbar == 0" @click="changeBottomSheet"/> -->
   </mu-appbar>
   </div>
 </template>

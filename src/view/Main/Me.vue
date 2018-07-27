@@ -3,8 +3,8 @@
         <!-- <Topbar></Topbar> -->
         <div class="me-top">
           <div>
-            <h3>{{user.name}}</h3>
-            <h4>{{user.username}}</h4>
+            <h3>{{user.realName}}</h3>
+            <h4>{{user.phone}}</h4>
           </div>
         </div>
         <div>
@@ -14,12 +14,12 @@
               <mu-icon slot="right" value="chevron_right" />
             </mu-list-item>
           </mu-list>
-          <mu-divider />
+          <!-- <mu-divider />
           <mu-list>
             <mu-list-item title="服务条款" value="4">
               <mu-icon slot="right" value="chevron_right"/>
             </mu-list-item>
-          </mu-list>
+          </mu-list> -->
         </div>
         <mu-divider />
         <mu-raised-button label="退出登录" class="me-logout" @click="logout" fullWidth/>
@@ -47,16 +47,12 @@ export default{
   created() {
     this.$store.commit(type.USER_GET);
     this.user = this.$store.state.base.user;
-    this.$store.commit(type.USER_ADDRESS, this.user.address);
+    this.$store.commit(type.USER_ADDRESS, this.user);
     console.log(this.user);
   },
   methods: {
     goPage(val) {
-      if (val === 2) {
-        this.$router.push({ name: this.$store.state.base.list[val][2] });
-      } else {
         this.$router.push(`/change/${val}`);
-      }
     },
     logout() {
       this.$store.commit(type.USER_LOGOUT);

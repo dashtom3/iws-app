@@ -12,8 +12,10 @@ const mutations = {
       state.user = JSON.parse(localStorage.getItem('swuser'));
     }
   },
-  [type.USER_ADDRESS](state, address) {
-    state.list[1][1] = address;
+  [type.USER_ADDRESS](state, user) {
+    state.list[1][1] = user.realName;
+    state.list[2][1] = user.phone;
+    state.list[3][1] = user.address;
   },
   [type.USER_LOGOUT](state) {
     state.user = null;
@@ -24,6 +26,17 @@ const mutations = {
   },
   [type.LD](state, list) {
     state.locationDetail = list;
+  },
+  [type.ALERT_TIME](state,time){
+    if(state.time){
+      clearTimeout(state.time)
+    }
+    state.time = time
+  },
+  [type.CLEAR_ALERT_TIME](state,time){
+    if(state.time){
+      clearTimeout(state.time)
+    }
   },
   [type.NEWS_LIST](state, list) {
     state.newsList = list;
@@ -63,7 +76,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.userUpdate(params)
       .then((data) => {
-        context.commit(type.USER_LOGIN, data.data);
+        // context.commit(type.USER_LOGIN, data.data);
         resolve();
       }).catch((err) => {
         reject(err);
@@ -103,6 +116,16 @@ const actions = {
       });
     });
   },
+  [type.USER_LIST](context, params) {
+    return new Promise((resolve, reject) => {
+      api.userList(params)
+      .then((data) => {
+        resolve(data);
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+  },
   [type.SYSTEM_LIST]() {
     return new Promise((resolve, reject) => {
       api.systemList()
@@ -130,6 +153,17 @@ const actions = {
       api.alarmList(params)
       .then((data) => {
         // context.commit(type.NEWS_LIST, data);
+        resolve(data);
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+  },
+  [type.REAL_ALARM_LIST](context, params) {
+    return new Promise((resolve, reject) => {
+      api.realAlarmList(params)
+      .then((data) => {
+        console.log(data)
         resolve(data);
       }).catch((err) => {
         reject(err);
@@ -227,15 +261,17 @@ export default {
     tabbar: 0,
     // systemList: [],
     // newsList: [],
-    list: [['修改密码', ''], ['联系地址', ''], ['工作组', '', 'Member']],
+    list: [['修改密码', ''], ['真实姓名', ''],['手机号', ''],['联系地址', '']],
     bottomSheet: false,
     tabInfo: [
       { value: 'Main', title: '首页', icon: 'home' },
       { value: 'Alarm', title: '报警', icon: 'notifications_none' },
-      { value: 'Task', title: '任务', icon: 'assignment' },
-      { value: 'Maintain', title: '养护', icon: 'security' },
+      // { value: 'Task', title: '任务', icon: 'assignment' },
+      // { value: 'Maintain', title: '养护', icon: 'security' },
+      { value: 'RecordList', title: '签到',icon:'assignment'},
       { value: 'Me', title: '我', icon: 'person' },
     ],
+    time:null,
     locationDetail: null,
     roomSelect: null,
     deviceSelect: null,

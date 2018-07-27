@@ -71,6 +71,7 @@ export default{
     };
   },
   created() {
+    clearTimeout(self.time)
     if (this.$store.state.base.locationDetail == null) {
       this.back();
     }
@@ -84,8 +85,10 @@ export default{
   },
   methods: {
     back() {
+      clearTimeout(self.time)
       self.time = null;
       this.$router.go(-1);
+
     },
     selectData(val) {
       this.dataSelect = val;
@@ -107,6 +110,7 @@ export default{
         // self.groupData = data.data;
         // self.getDeviceData();
         Indicator.close();
+
         self.time = setTimeout(()=>{
           self.getRealData()
         },15000)

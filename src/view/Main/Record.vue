@@ -2,17 +2,18 @@
     <div class="record">
         <mu-appbar title="签到">
             <mu-icon-button icon='arrow_back' slot="left" @click="back"/>
-            <mu-flat-button label="我的签到" slot="right" @click="myRecord"/>
+            <!-- <mu-flat-button label="我的签到" slot="right" @click="myRecord"/> -->
             <mu-flat-button label="提交" slot="right" @click="signIn"/>
         </mu-appbar>
 
         <div class="record-content">
-            <mu-select-field v-model="sign.sys"  label="选择系统" fullWidth>
+            <!-- <mu-select-field v-model="sign.sys"  label="选择系统" fullWidth>
               <mu-menu-item v-for="sys,index in sysList" :key="index" :value="index" :title="sys.name" />
             </mu-select-field>
             <mu-select-field v-model="sign.status"  label="选择地点" fullWidth v-if="sign.sys != null">
               <mu-menu-item v-for="place,index in sysList[sign.sys].place" :key="index" :value="place.id" :title="place.name" />
-            </mu-select-field>
+            </mu-select-field> -->
+            <mu-text-field hintText="工作地点" v-model="sign.realAddress" fullWidth /><br/>
             <div class="now-pos">
               <span>当前位置:&nbsp;&nbsp;&nbsp;&nbsp;</span>
               <span>经度: {{center[0]}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>纬度: {{center[1]}}</span><br>
@@ -29,14 +30,14 @@
             <mu-text-field hintText="问题描述" multiLine :rows="2" :rowsMax="6" v-model="sign.problems" fullWidth /><br/>
             <mu-text-field hintText="协调工作" multiLine :rows="2" :rowsMax="6" v-model="sign.teamwork" fullWidth /><br/>
             <mu-text-field hintText="详细描述" multiLine :rows="2" :rowsMax="6" v-model="sign.detailMsg" fullWidth /><br/>
-            <el-upload
+            <!-- <el-upload
             action="http://218.23.124.104:6784/iws/api/file/upload"
             :on-remove="handleRemove"
             :on-success="uploadSucceed"
             :file-list="fileList"
             >
              <el-button size="small" type="primary">图片上传</el-button>
-          </el-upload>
+          </el-upload> -->
 
 
         </div>
@@ -65,11 +66,10 @@ export default{
       },
       fileList: [],
       sign: {
-        sys: null,
-        status: null,
         teamwork: null,
         problems: null,
         detailMsg: null,
+        realAddress:null,
         img: null,
         lng: null,
         lat: null,
@@ -115,7 +115,7 @@ export default{
     };
   },
   created() {
-    this.getSystemList();
+    // this.getSystemList();
   },
   methods: {
     back() {
@@ -170,7 +170,7 @@ export default{
       this.fileList.push({ name: response.data, url: response.data });
     },
     signIn() {
-      if (this.sign.status != null && this.sign.userName != null && this.sign.address != null) {
+      if ( this.sign.userName != null && this.sign.address != null) {
         Indicator.open();
         const self = this;
         this.$store.dispatch(type.SIGN_IN, this.sign).then((data) => {

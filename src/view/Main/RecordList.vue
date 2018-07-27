@@ -1,18 +1,23 @@
 <template>
     <div class="record">
-        <mu-appbar title="签到列表">
+      <Topbar></Topbar>
+        <!-- <mu-appbar title="签到列表">
             <mu-icon-button icon='arrow_back' slot="left" @click="back"/>
-        </mu-appbar>
+        </mu-appbar> -->
 
         <mu-card class="main-card" v-for="item,index in signList" >
           <div style="padding:8px">
-            <span><b>{{item.system ? item.system.systemName : "未知" }} ：{{item.location? item.location.locationName:"未知"}}</b></span>
+            <span><b>签到地址:{{item.realAddress}}</b></span>
             <mu-flat-button label="详情" class="detail-btn" primary @click="showDetail(index)"/>
           </div>
           <div style="padding-bottom:8px;padding-left:8px">
             <span>
-              {{item.userName}}&nbsp;&nbsp;{{item.time | dateAll}}
+              <b>处理人:{{item.userName}}&nbsp;&nbsp;</b>{{item.create_time}}
             </span>
+            <!-- <br>
+            <span>
+              {{item.address}}
+            </span> -->
           </div>
             <!-- <mu-icon-button label="详情" slot="right" @click="back"/> -->
             <!-- <mu-flat-button :label="item.userName" class="detail-btn" default disabled/> -->
@@ -24,16 +29,17 @@
             <b>问题描述:</b><span>{{item.problems}}</span><span v-if="item.problems == null">暂无内容</span><br>
             <b>协调工作:</b><span>{{item.teamwork}}</span><span v-if="item.teamwork == null">暂无内容</span><br>
             <b>详细描述:</b><span>{{item.detailMsg}}</span><span v-if="item.detailMsg == null">暂无内容</span><br>
-            <b>图片详情:</b>
-            <img :src="item.img" style="width:100%">
-            </mu-card-text>
+
+          </mu-card-text>
         </mu-card>
-        <mu-card v-if="signList.length == 0 || signList == null">
+        <mu-card v-if="signList == null || signList.length == 0">
             <mu-card-text>
               暂无签到信息
             </mu-card-text>
         </mu-card>
         <!-- <mu-infinite-scroll :scroller="scroller" :loading="signArgs.currentPage == signArgs.totalPage" @load="loadMore"/> -->
+          <mu-raised-button label="签到" class="record-button" @click="recordWork" primary/>
+      <Tabbar></Tabbar>
     </div>
 </template>
 
@@ -58,12 +64,9 @@ export default{
       itemShow: -1,
       user: null,
       signArgs: {
-        status: null,
-        userId: null,
-        startTime: null,
-        endTime: null,
-        currentPage: 1,
-        numberPerPage: 20,
+        isMe:'1',
+        pageNum: 1,
+        pageSize: 50,
         totalPage: -1,
       },
       signList: null,
@@ -94,9 +97,9 @@ export default{
       const self = this;
       this.$store.dispatch(type.SIGN_IN_LIST, this.signArgs).then((data) => {
         console.log(data.data);
-        self.signList = data.data;
-        self.signArgs.totalPage = data.totalPage;
-        self.signArgs.currentPage = data.currentPage;
+        self.signList = data.data.data;
+        self.signArgs.totalPage = data.data.page.totalPage;
+        self.signArgs.pageNum = data.data.page.pageNum;
         // self.sysList = data.data;
         // self.sysList = self.analyseList(data.data);
         Indicator.close();
@@ -133,12 +136,16 @@ export default{
     showDetail(index) {
       this.itemShow = this.itemShow === index ? -1 : index;
     },
+    recordWork(){
+      this.$router.push({name:'Record'})
+    }
   },
 };
 </script>
 <style lang="css" scoped>
     .record{
        -webkit-overflow-scrolling: touch;
+       margin-top: 60px;
     }
     .record-content{
       margin-left: 20px;
@@ -151,5 +158,9 @@ export default{
       margin-left: 10px;
       margin-right: 10px;
       margin-top: 10px;
+    }
+    .record-button{
+      position: fixed;
+      bottom:60px;
     }
 </style>
